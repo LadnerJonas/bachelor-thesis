@@ -18,6 +18,8 @@ jobs:
 
       - name: Create and Update Submodule Branch
         run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
           # Fetch the latest changes
           git fetch origin master
           
