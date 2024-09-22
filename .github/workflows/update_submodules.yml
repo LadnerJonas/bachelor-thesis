@@ -14,7 +14,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: 'recursive'
-          token: ${{ secrets.DB_PAT }}  # Use the DB_PAT for submodule access
+          token: ${{ secrets.DB_PAT }} 
 
       - name: Create and Update Submodule Branch
         run: |
@@ -79,7 +79,7 @@ jobs:
         if: ${{ env.pr_number != '' }}
         env:
           DB_TOKEN: ${{ secrets.DB_PAT }}
-          PULL_NUMBER: $pr_number
+          PULL_NUMBER: ${{ env.pr_number }}
         run: |
           response=$(curl -L \
             -X PATCH \
@@ -96,3 +96,4 @@ jobs:
             echo "Failed to update pull request."
             exit 1
           fi
+
