@@ -26,11 +26,20 @@ jobs:
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
           git add .
-          git commit -m "Automated submodule update" || echo "No changes to commit"
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 1  # Stop the workflow if no changes
+          else
+            git commit -m "Automated submodule update"
+          fi
 
       - name: Push Changes
         run: |
-          git push origin HEAD:refs/heads/submodule-update-branch || echo "No changes to push"
+          git fetch origin submodule-update-branch || echo "No remote branch to fetch"
+          git checkout submodule-update-branch || git checkout -b submodule-update-branch
+          git merge origin/submodule-update-branch || echo "No changes to merge"
+          git push origin HEAD:refs/heads/submodule-update-branch || echo "Failed to push changes"
+
 
       - name: Create Pull Request
         env:
