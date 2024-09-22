@@ -33,10 +33,10 @@ jobs:
 
       - name: Create Pull Request
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DB_TOKEN: ${{ secrets.DB_PAT }}
         run: |
           PR_TITLE="Automated Submodule Update"
           PR_BODY="This pull request updates the submodules to their latest versions."
-          curl -X POST -H "Authorization: token $GITHUB_TOKEN" \
+          curl -X POST -H "Authorization: token $DB_TOKEN" \
             -d "{\"title\":\"$PR_TITLE\",\"body\":\"$PR_BODY\",\"head\":\"submodule-update-branch\",\"base\":\"master\"}" \
             https://api.github.com/repos/${{ github.repository }}/pulls
