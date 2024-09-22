@@ -14,9 +14,10 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: 'recursive'
-          token: ${{ secrets.DB_PAT }} 
+          token: ${{ secrets.DB_PAT }}  # Use the DB_PAT for submodule access
 
       - name: Create and Update Submodule Branch
+        id: update_branch
         run: |
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
@@ -26,17 +27,21 @@ jobs:
           git add .
           if git diff --cached --quiet; then
             echo "No changes to commit."
-            exit 0  # Stop the workflow if no changes
+            echo "changes_found=false" >> $GITHUB_ENV  # Set an environment variable
+            exit 0
           else
             git commit -m "Automated submodule update"
+            echo "changes_found=true" >> $GITHUB_ENV  # Set an environment variable
           fi
 
       - name: Push Changes
+        if: ${{ env.changes_found == 'true' }}
         run: |
           git push origin submodule-update-branch --force || echo "Failed to push changes"
 
       - name: Check for Existing Pull Request
         id: check_pr
+        if: ${{ env.changes_found == 'true' }}
         env:
           DB_TOKEN: ${{ secrets.DB_PAT }}
         run: |
@@ -55,7 +60,7 @@ jobs:
           fi
 
       - name: Create Pull Request
-        if: ${{ env.pr_number == '' }}
+        if: ${{ env.changes_found == 'true' && env.pr_number == '' }}
         env:
           DB_TOKEN: ${{ secrets.DB_PAT }}
         run: |
@@ -76,7 +81,7 @@ jobs:
           fi
 
       - name: Update Existing Pull Request
-        if: ${{ env.pr_number != '' }}
+        if: ${{ env.changes_found == 'true' && env.pr_number != '' }}
         env:
           DB_TOKEN: ${{ secrets.DB_PAT }}
           PULL_NUMBER: ${{ env.pr_number }}
@@ -96,4 +101,3 @@ jobs:
             echo "Failed to update pull request."
             exit 1
           fi
-
