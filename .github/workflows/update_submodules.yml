@@ -26,7 +26,7 @@ jobs:
           git add .
           if git diff --cached --quiet; then
             echo "No changes to commit."
-            exit 1  # Stop the workflow if no changes
+            exit 0  # Stop the workflow if no changes
           else
             git commit -m "Automated submodule update"
           fi
