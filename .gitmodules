@@ -2,3 +2,6 @@
 	path = implementation
 	url = git@github.com:LadnerJonas/bachelor-thesis-implementation.git
 	branch = master
+[submodule "thesis"]
+	path = thesis
+	url = git@github.com:LadnerJonas/bachelor-thesis-thesis.git
