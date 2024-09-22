@@ -16,15 +16,18 @@ jobs:
           submodules: 'recursive'
           token: ${{ secrets.DB_PAT }}  # Use the DB_PAT for submodule access
 
-      - name: Update Submodules
+      - name: Create and Update Submodule Branch
         run: |
-          git submodule update --remote
-          git diff --exit-code || echo "Submodules updated"
+          # Fetch the latest changes
+          git fetch origin master
+          
+          # Create or reset the submodule-update-branch to the latest master
+          git checkout -B submodule-update-branch origin/master
 
-      - name: Commit Changes
-        run: |
-          git config --global user.name "GitHub Action"
-          git config --global user.email "action@github.com"
+          # Update submodules
+          git submodule update --remote
+          
+          # Check for changes and commit if there are any
           git add .
           if git diff --cached --quiet; then
             echo "No changes to commit."
@@ -35,11 +38,7 @@ jobs:
 
       - name: Push Changes
         run: |
-          git fetch origin submodule-update-branch || echo "No remote branch to fetch"
-          git checkout submodule-update-branch || git checkout -b submodule-update-branch
-          git merge origin/submodule-update-branch || echo "No changes to merge"
-          git push origin HEAD:refs/heads/submodule-update-branch || echo "Failed to push changes"
-
+          git push origin submodule-update-branch --force || echo "Failed to push changes"
 
       - name: Create Pull Request
         env:
@@ -60,4 +59,3 @@ jobs:
             echo "Failed to create pull request."
             exit 1
           fi
-          
