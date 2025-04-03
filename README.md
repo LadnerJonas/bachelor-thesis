@@ -27,7 +27,7 @@ The following plots are part of the evaluation of the shuffle operator implement
 
 To measure the throughput of the shuffle operator implementations, we ran a series of experiments with varying numbers of partitions and threads. The throughput is measured in tuples per second and is plotted against the number of partitions.
 
-We added two best-case upper bounds to the plots: Both upper bounds implementations use a pre-partitioned input stream, which allows both implementation to fully utilize the write-out buffers. The `unsync` line represents the throughput of the ideal shuffle operator where no synchronization is performed. On the other hand, the `sync` line represents the throughput of the ideal shuffle operator where the slotted pages are shared among all threads.
+We added two best-case upper bounds to the plots: Both upper bounds implementations use a pre-partitioned input stream, which allows both implementation to fully utilize the write-out buffers without having to partition the input stream. The `unsync` line represents the throughput of the ideal shuffle operator where no synchronization is performed. On the other hand, the `sync` line represents the throughput of the ideal shuffle operator where the slotted pages are shared among all threads.
 
 ![T16-P2](images/Tuples_per_Second-Tuple16-Partitions2.svg)
 ![legend](images/Legend.svg)
